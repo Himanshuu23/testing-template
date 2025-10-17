@@ -19,9 +19,8 @@ export default function HomePage() {
     };
   }, []);
 
-  // Handle hover effect for the disabled button
-  const handleMouseEnter = (e: React.MouseEvent) => {
-    const button = e.currentTarget;
+  const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const button = e.currentTarget as HTMLButtonElement;
     const maxX = window.innerWidth - button.offsetWidth;
     const maxY = window.innerHeight - button.offsetHeight;
     const randomX = Math.random() * maxX;
@@ -29,8 +28,9 @@ export default function HomePage() {
     button.style.transform = `translate(${randomX}px, ${randomY}px)`;
   };
 
-  const handleMouseLeave = (e: React.MouseEvent) => {
-    e.currentTarget.style.transform = "translate(0, 0)";
+  const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const button = e.currentTarget as HTMLButtonElement;
+    button.style.transform = "translate(0, 0)";
   };
 
   return (
@@ -72,7 +72,7 @@ export default function HomePage() {
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
         >
           <div className="bg-white p-6 rounded-lg">
-            <p className="text-xl">whatsapp pe btaooo</p>
+            <p className="text-xl text-black">whatsapp pe btaooo</p>
             <button
               onClick={() => window.close()}
               className="mt-4 px-4 py-2 bg-pink-500 text-white rounded-lg cursor-pointer"
