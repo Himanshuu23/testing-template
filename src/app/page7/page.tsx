@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const dodgeButtonRef = useRef<HTMLButtonElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -20,12 +21,12 @@ export default function HomePage() {
     };
   }, []);
 
-  const handleMouseMoveOnWindow = (e: MouseEvent) => {
+  const handleMouseMove = (e: MouseEvent) => {
     const btn = dodgeButtonRef.current;
     if (!btn) return;
 
     const rect = btn.getBoundingClientRect();
-    const offset = 80; // how close before it moves
+    const offset = 100;
     const mouseX = e.clientX;
     const mouseY = e.clientY;
 
@@ -36,13 +37,12 @@ export default function HomePage() {
       Math.abs(distX) < rect.width / 2 + offset &&
       Math.abs(distY) < rect.height / 2 + offset
     ) {
-      // button is “too close” — move it
-      const deltaX = (offset * (distX / Math.abs(distX))) || offset;
-      const deltaY = (offset * (distY / Math.abs(distY))) || offset;
+      const deltaX = (Math.random() - 0.5) * 400;
+      const deltaY = (Math.random() - 0.5) * 400;
+
       let newLeft = rect.left + deltaX;
       let newTop = rect.top + deltaY;
 
-      // keep inside window bounds
       const maxX = window.innerWidth - rect.width;
       const maxY = window.innerHeight - rect.height;
       if (newLeft < 0) newLeft = 0;
@@ -56,21 +56,16 @@ export default function HomePage() {
     }
   };
 
-  useEffect(() => {
-    window.addEventListener("mousemove", handleMouseMoveOnWindow);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMoveOnWindow);
-    };
-  }, []);
-
-  const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const resetButtonPosition = () => {
     const btn = dodgeButtonRef.current;
     if (!btn) return;
-    // reset
-    btn.style.transform = "";
+    btn.style.position = "";
     btn.style.left = "";
     btn.style.top = "";
-    btn.style.position = "";
+  };
+
+  const handleButtonClick = () => {
+    router.push("/page6");
   };
 
   return (
@@ -102,38 +97,35 @@ export default function HomePage() {
 
       <div className="flex items-center space-x-4 mt-4">
         <button
-          onClick={() => setIsModalOpen(true)}
-          className="px-6 py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-600 cursor-pointer"
+          onClick={handleButtonClick}
+          className="px-6 py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-600 cursor-pointer z-50"
         >
           Would love tooo! 😆
         </button>
+
         <button
           ref={dodgeButtonRef}
-          onMouseLeave={handleMouseLeave}
-          className="px-6 py-3 bg-gray-500 text-white rounded-lg"
+          onClick={handleButtonClick}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={resetButtonPosition}
+          className="px-6 py-3 bg-gray-500 text-white rounded-lg cursor-pointer transition-all duration-200"
         >
           Block kr dungi 😡
         </button>
       </div>
 
-      <p>aur maine kuchh FAALTU ya aisa bol diya ho which is inappropriate then i am sorry -- i tried not to though mujhe daatne lag jaao kabhi🤰</p>
+      <button
+        onClick={handleButtonClick}
+        className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 cursor-pointer"
+      >
+        next
+      </button>
 
-      {isModalOpen && (
-        <div
-          ref={modalRef}
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-        >
-          <div className="bg-white p-6 rounded-lg">
-            <p className="text-xl text-black">whatsapp pe btaooo</p>
-            <button
-              onClick={() => window.close()}
-              className="mt-4 px-4 py-2 bg-pink-500 text-white rounded-lg cursor-pointer"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      <p>
+        aur maine kuchh FAALTU ya aisa bol diya ho which is inappropriate then i
+        am sorry -- i tried not to though mujhe daatne lag jaao kabhi🤰 aur mere
+        paas time nahi tha isliye awful design sorry about that :(
+      </p>
     </div>
   );
 }

@@ -10,12 +10,12 @@ export default function HomePage() {
         Happy Birthday 5 feet ❤️
       </h1>
       <div className="flex items-center justify-center space-x-12 mb-8">
-        <div className="flex flex-col items-center space-y-6">
+        <div className="flex flex-col items-center space-y-6 mx-10">
           <Image
             src="/mam.png"
             alt="Message Screenshot"
-            width={300}
-            height={150}
+            width={200}
+            height={50}
             className="rounded-2xl object-cover"
           />
           <Image

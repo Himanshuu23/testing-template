@@ -41,7 +41,7 @@ export default function Page5() {
               zIndex: 20
             }}
           />
-          <div style={{ position: "absolute", top: "30%", right: "-80px", width: "80px", height: "80px", zIndex: 10 }}>
+          <div style={{ position: "absolute", top: "30%", left: "-80px", width: "80px", height: "80px", zIndex: 10 }}>
             <Image src="/react.jpeg" alt="React" width={80} height={80} style={{ borderRadius: "50%", objectFit: "cover" }} />
           </div>
         </div>
