@@ -28,6 +28,7 @@ export default function HomePage() {
       >
         Chalo byeeee 👋
       </button>
+      <p>waise i have never seen a girl as sundar as uuuuuu 😊</p>
     </div>
   );
 }
