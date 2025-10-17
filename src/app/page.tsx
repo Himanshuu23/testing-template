@@ -14,8 +14,8 @@ export default function HomePage() {
           <Image
             src="/mam.png"
             alt="Message Screenshot"
-            width={400}
-            height={220}
+            width={300}
+            height={150}
             className="rounded-2xl object-cover"
           />
           <Image

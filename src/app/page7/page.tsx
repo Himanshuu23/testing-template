@@ -6,6 +6,7 @@ import Image from "next/image";
 export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const dodgeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -19,26 +20,76 @@ export default function HomePage() {
     };
   }, []);
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const button = e.currentTarget as HTMLButtonElement;
-    const maxX = window.innerWidth - button.offsetWidth;
-    const maxY = window.innerHeight - button.offsetHeight;
-    const randomX = Math.random() * maxX;
-    const randomY = Math.random() * maxY;
-    button.style.transform = `translate(${randomX}px, ${randomY}px)`;
+  const handleMouseMoveOnWindow = (e: MouseEvent) => {
+    const btn = dodgeButtonRef.current;
+    if (!btn) return;
+
+    const rect = btn.getBoundingClientRect();
+    const offset = 80; // how close before it moves
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+
+    const distX = mouseX - (rect.left + rect.width / 2);
+    const distY = mouseY - (rect.top + rect.height / 2);
+
+    if (
+      Math.abs(distX) < rect.width / 2 + offset &&
+      Math.abs(distY) < rect.height / 2 + offset
+    ) {
+      // button is “too close” — move it
+      const deltaX = (offset * (distX / Math.abs(distX))) || offset;
+      const deltaY = (offset * (distY / Math.abs(distY))) || offset;
+      let newLeft = rect.left + deltaX;
+      let newTop = rect.top + deltaY;
+
+      // keep inside window bounds
+      const maxX = window.innerWidth - rect.width;
+      const maxY = window.innerHeight - rect.height;
+      if (newLeft < 0) newLeft = 0;
+      if (newLeft > maxX) newLeft = maxX;
+      if (newTop < 0) newTop = 0;
+      if (newTop > maxY) newTop = maxY;
+
+      btn.style.position = "fixed";
+      btn.style.left = `${newLeft}px`;
+      btn.style.top = `${newTop}px`;
+    }
   };
 
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMoveOnWindow);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMoveOnWindow);
+    };
+  }, []);
+
   const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const button = e.currentTarget as HTMLButtonElement;
-    button.style.transform = "translate(0, 0)";
+    const btn = dodgeButtonRef.current;
+    if (!btn) return;
+    // reset
+    btn.style.transform = "";
+    btn.style.left = "";
+    btn.style.top = "";
+    btn.style.position = "";
   };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen p-4 space-y-6 bg-black text-white">
+      <div className="relative w-64 h-64 mb-4">
+        <Image
+          src="/chaar.png"
+          alt="Friends"
+          width={256}
+          height={256}
+          className="object-cover rounded-2xl"
+        />
+      </div>
+
       <h1 className="text-3xl font-bold">celebrate together? (just 15 mins)</h1>
       <p className="text-lg">(once in a lifetime hai) :(</p>
       <p className="text-lg">u wont turn 21 againnnnnn!</p>
       <p className="text-lg">will destroy food together here</p>
+
       <div className="relative w-64 h-64">
         <Image
           src="/cafe.jpg"
@@ -48,6 +99,7 @@ export default function HomePage() {
           className="object-cover rounded-2xl"
         />
       </div>
+
       <div className="flex items-center space-x-4 mt-4">
         <button
           onClick={() => setIsModalOpen(true)}
@@ -56,14 +108,14 @@ export default function HomePage() {
           Would love tooo! 😆
         </button>
         <button
-          disabled
-          onMouseEnter={handleMouseEnter}
+          ref={dodgeButtonRef}
           onMouseLeave={handleMouseLeave}
-          className="px-6 py-3 bg-gray-500 text-white rounded-lg cursor-not-allowed"
+          className="px-6 py-3 bg-gray-500 text-white rounded-lg"
         >
           Block kr dungi 😡
         </button>
       </div>
+
       <p>aur maine kuchh FAALTU ya aisa bol diya ho which is inappropriate then i am sorry -- i tried not to though mujhe daatne lag jaao kabhi🤰</p>
 
       {isModalOpen && (
